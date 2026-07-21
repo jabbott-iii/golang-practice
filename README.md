@@ -1,4 +1,4 @@
-## Project Status:
+# Project Status:
 
-# goapi - complete
-# slotsproject - inprogress
+### goapi - complete
+### slotsproject - inprogress

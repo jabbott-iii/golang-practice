@@ -1,1 +1,4 @@
-# golang-practice
+## Project Status:
+
+# goapi - complete
+# slotsproject - inprogress

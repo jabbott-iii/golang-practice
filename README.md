@@ -1,4 +1,5 @@
 # Project Status:
 
-### goapi - complete
+### goapi - complete - verified on postman
 ### slotsproject - inprogress
+### goapi-sqlite - inprogress

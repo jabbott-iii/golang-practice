@@ -28,7 +28,7 @@ func Authorization(next http.Handler) http.Handler {
 		}
 
 		loginDetails := database.GetUserLoginDetails(username)
-		if loginDetails == nil || token != loginDetails.AuthToken {
+		if loginDetails != nil && token != loginDetails.AuthToken {
 			log.Error(UnAuthorizedError)
 			RequestErrorHandler(w, UnAuthorizedError)
 			return

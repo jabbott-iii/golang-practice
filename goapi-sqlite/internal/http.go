@@ -2,6 +2,7 @@ package internal
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/gorilla/schema"
@@ -47,11 +48,17 @@ func GetCoinBalance(w http.ResponseWriter, r *http.Request) {
 
 func CreateUserAccount(w http.ResponseWriter, r *http.Request) {
 	var params CreateUserParams
-	var decoder = schema.NewDecoder()
 
-	if err := decoder.Decode(&params, r.URL.Query()); err != nil {
+	// For POST JSON body:
+	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 		log.Error(err)
 		InternalErrorHandler(w)
+		return
+	}
+
+	if params.Username == "" {
+		log.Error("username is required")
+		RequestErrorHandler(w, errors.New("username is required"))
 		return
 	}
 
@@ -62,26 +69,21 @@ func CreateUserAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenDetails := database.CreateUser(params.Username, params.AuthToken, params.Coins)
-	if tokenDetails == nil {
+	user := database.CreateUser(params.Username, params.Coins)
+	if user == nil {
 		log.Error("Failed to create user: ", params.Username)
 		InternalErrorHandler(w)
 		return
 	}
 
-	var response = CreateUserResponse{
-		Username:  tokenDetails.Username,
-		AuthToken: tokenDetails.AuthToken,
-		Coins:     int(tokenDetails.Coins),
-		Code:      http.StatusOK,
+	response := CreateUserResponse{
+		Username: user.Username,
+		Coins:    int(user.Coins),
+		Code:     http.StatusOK,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		log.Error(err)
-		InternalErrorHandler(w)
-		return
-	}
+	_ = json.NewEncoder(w).Encode(response)
 }
 
 func GetUserDetails(w http.ResponseWriter, r *http.Request) {
@@ -109,10 +111,10 @@ func GetUserDetails(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var response = GetUserResponse{
-		Username:  tokenDetails.Username,
-		AuthToken: tokenDetails.AuthToken,
-		Coins:     int(tokenDetails.Coins),
-		Code:      http.StatusOK,
+		Username: tokenDetails.Username,
+		// AuthToken: tokenDetails.AuthToken,
+		Coins: int(tokenDetails.Coins),
+		Code:  http.StatusOK,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -125,9 +127,9 @@ func GetUserDetails(w http.ResponseWriter, r *http.Request) {
 
 func UpdateCoinBalance(w http.ResponseWriter, r *http.Request) {
 	var params UpdateCoinParams
-	var decoder = schema.NewDecoder()
 
-	if err := decoder.Decode(&params, r.URL.Query()); err != nil {
+	// For POST JSON body:
+	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 		log.Error(err)
 		InternalErrorHandler(w)
 		return

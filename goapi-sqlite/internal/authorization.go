@@ -1,20 +1,12 @@
 package internal
 
-import (
-	"errors"
-	"net/http"
-
-	log "github.com/sirupsen/logrus"
-)
-
+/*
 var UnAuthorizedError = errors.New("invalid username or token")
 
-func Authorization(next http.Handler) http.Handler {
+ func Authorization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		username := r.URL.Query().Get("username")
-		token := r.Header.Get("Authorization")
-
-		if username == "" || token == "" {
+		if username == "" {
 			log.Error(UnAuthorizedError)
 			RequestErrorHandler(w, UnAuthorizedError)
 			return
@@ -28,7 +20,16 @@ func Authorization(next http.Handler) http.Handler {
 		}
 
 		loginDetails := database.GetUserLoginDetails(username)
-		if loginDetails != nil && token != loginDetails.AuthToken {
+
+		// New user: allow request (e.g., create credentials/signup)
+		if loginDetails == nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// Existing user: token is required and must match
+		token := r.Header.Get("Authorization")
+		if token == "" || token != loginDetails.AuthToken {
 			log.Error(UnAuthorizedError)
 			RequestErrorHandler(w, UnAuthorizedError)
 			return
@@ -37,3 +38,4 @@ func Authorization(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+*/

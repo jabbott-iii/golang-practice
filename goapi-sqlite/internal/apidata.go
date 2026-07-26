@@ -6,7 +6,7 @@ import (
 )
 
 type CoinBalanceParams struct {
-	Username string
+	Username string `json:"username"`
 }
 
 type CoinBalanceResponse struct {
@@ -18,40 +18,37 @@ type CoinBalanceResponse struct {
 }
 
 type CreateUserParams struct {
-	Username string
-	AuthToken string
-	Coins int
+	Username string `json:"username"`
+	Coins    int    `json:"coins"`
 }
 
 type CreateUserResponse struct {
 	Code int
 
-	Username string
-	AuthToken string
-	Coins int
+	Username string `json:"username"`
+	Coins    int    `json:"coins"`
 }
 
 type GetUserParams struct {
-	Username string
+	Username string `json:"username"`
 }
 
 type GetUserResponse struct {
 	Code int
 
-	Username string
-	AuthToken string
-	Coins int
+	Username string `json:"username"`
+	Coins    int    `json:"coins"`
 }
 type UpdateCoinParams struct {
-	Username string
-	Coins int
+	Username string `json:"username"`
+	Coins    int    `json:"coins"`
 }
 
 type UpdateCoinResponse struct {
 	Code int
 
-	Username string
-	Coins int
+	Username string `json:"username"`
+	Coins    int    `json:"coins"`
 }
 
 // Error response
@@ -65,7 +62,7 @@ type Error struct {
 
 func writeError(w http.ResponseWriter, message string, code int) {
 	var resp = Error{
-		Code: code,
+		Code:    code,
 		Message: message,
 	}
 

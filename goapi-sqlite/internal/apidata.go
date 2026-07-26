@@ -31,6 +31,17 @@ type CreateUserResponse struct {
 	Coins int
 }
 
+type GetUserParams struct {
+	Username string
+}
+
+type GetUserResponse struct {
+	Code int
+
+	Username string
+	AuthToken string
+	Coins int
+}
 type UpdateCoinParams struct {
 	Username string
 	Coins int

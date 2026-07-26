@@ -41,6 +41,7 @@ type DatabaseInterface interface {
 	GetUserLoginDetails(username string) *LoginDetails
 	GetUserCoins(username string) *CoinDetails
 	CreateUser(username, authToken string, coins int) *UserDetails
+	GetUser(username string) *UserDetails
 	UpdateCoins(username string, coins int) *CoinDetails
 }
 
@@ -96,6 +97,20 @@ func (d *DB) CreateUser(username string, authToken string, coins int) *UserDetai
 	result := d.conn.Create(&record)
 	if result.Error != nil {
 		log.WithError(result.Error).Errorf("could not create user: %s", username)
+		return nil
+	}
+	return &UserDetails{
+		Username:  record.Username,
+		AuthToken: record.AuthToken,
+		Coins:     int64(record.Coins),
+	}
+}
+
+func (d *DB) GetUser(username string) *UserDetails {
+	var record Coindb
+	result := d.conn.Where("username = ?", username).First(&record)
+	if result.Error != nil {
+		log.WithError(result.Error).Errorf("could not find user: %s", username)
 		return nil
 	}
 	return &UserDetails{

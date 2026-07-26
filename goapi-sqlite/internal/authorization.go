@@ -7,14 +7,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var UnAuthorizedError error = errors.New("invalid username or token")
+var UnAuthorizedError = errors.New("invalid username or token")
 
 func Authorization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		var username string = r.URL.Query().Get("username")
-		var token string = r.Header.Get("Authorization")
-		var err error
+		username := r.URL.Query().Get("username")
+		token := r.Header.Get("Authorization")
 
 		if username == "" || token == "" {
 			log.Error(UnAuthorizedError)
@@ -22,17 +20,15 @@ func Authorization(next http.Handler) http.Handler {
 			return
 		}
 
-		var database *DatabaseInterface
-		database, err = NewDatabase()
+		database, err := NewDatabase()
 		if err != nil {
+			log.Error(err)
 			InternalErrorHandler(w)
 			return
 		}
 
-		var loginDetails *LoginDetails
-		loginDetails = (*database).GetUserLoginDetails(username)
-
-		if loginDetails == nil || (token != (*loginDetails).AuthToken) {
+		loginDetails := database.GetUserLoginDetails(username)
+		if loginDetails == nil || token != loginDetails.AuthToken {
 			log.Error(UnAuthorizedError)
 			RequestErrorHandler(w, UnAuthorizedError)
 			return

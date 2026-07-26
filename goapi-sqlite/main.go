@@ -11,6 +11,8 @@ import (
 
 func main() {
 
+	fmt.Println("Starting server...")
+
 	log.SetReportCaller(true)
 	var r *chi.Mux = chi.NewRouter()
 	internal.Handler(r)
@@ -19,8 +21,6 @@ func main() {
 
 	var err error = http.ListenAndServe("localhost:8000", r)
 	if err != nil {
-
-
 		log.Error(err)
 	}
 }

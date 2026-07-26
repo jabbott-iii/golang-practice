@@ -15,5 +15,8 @@ func Handler(r *chi.Mux) {
 		router.Use(Authorization)
 
 		router.Get("/coins", GetCoinBalance)
+
+		router.Post("/user", CreateUserAccount)
+		router.Get("/user", CreateUserAccount)
 	})
 }

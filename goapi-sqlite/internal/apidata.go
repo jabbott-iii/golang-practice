@@ -5,18 +5,42 @@ import (
 	"net/http"
 )
 
-// coin balance params
 type CoinBalanceParams struct {
 	Username string
 }
 
-// coin balance response
 type CoinBalanceResponse struct {
 	// success code
 	Code int
 
 	// Balance
 	Balance int64
+}
+
+type CreateUserParams struct {
+	Username string
+	AuthToken string
+	Coins int
+}
+
+type CreateUserResponse struct {
+	Code int
+
+	Username string
+	AuthToken string
+	Coins int
+}
+
+type UpdateCoinParams struct {
+	Username string
+	Coins int
+}
+
+type UpdateCoinResponse struct {
+	Code int
+
+	Username string
+	Coins int
 }
 
 // Error response
